@@ -1,0 +1,84 @@
+
+## 2. library.json
+
+```json
+{
+  "name": "LED_BUILTIN",
+  "version": "1.2.0",
+  "description": "Complete library for managing built-in LEDs (LED_BUILTIN) on ESP8266 and ESP32 boards with extended GPIO support and advanced blinking functions",
+  "keywords": [
+    "led",
+    "builtin",
+    "esp8266",
+    "esp32",
+    "gpio",
+    "blink",
+    "duty-cycle",
+    "heltec",
+    "ttgo",
+    "adafruit",
+    "sparkfun",
+    "m5stack"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fo170/LED_BUILTIN.git"
+  },
+  "authors": [
+    {
+      "name": "Fo170",
+      "email": "",
+      "url": "https://github.com/Fo170",
+      "maintainer": true
+    }
+  ],
+  "license": "GPL-3.0-only",
+  "homepage": "https://github.com/Fo170/LED_BUILTIN",
+  "frameworks": "arduino",
+  "platforms": [
+    "espressif8266",
+    "espressif32"
+  ],
+  "headers": "LED_BUILTIN.h",
+  "examples": [
+    {
+      "name": "Basic Example",
+      "base": "examples/Basic_Example"
+    },
+    {
+      "name": "Duty Cycle Example",
+      "base": "examples/DutyCycle_Example"
+    },
+    {
+      "name": "Frequency Example",
+      "base": "examples/Frequency_Example"
+    },
+    {
+      "name": "Pattern Example",
+      "base": "examples/Pattern_Example"
+    },
+    {
+      "name": "SOS Example",
+      "base": "examples/SOS_Example"
+    },
+    {
+      "name": "Morse Example",
+      "base": "examples/Morse_Example"
+    }
+  ],
+  "export": {
+    "exclude": [
+      ".github",
+      "extras",
+      "test",
+      "*.md",
+      "*.txt"
+    ]
+  },
+  "dependencies": {},
+  "build": {
+    "flags": [
+      "-I include"
+    ]
+  }
+}
