@@ -182,33 +182,32 @@ Pour des motifs complexes : LED_BUILTIN_BLINK_PATTERN()
 // MACROS UTILITAIRES
 // ============================================
 #if LED_BUILTIN_POLARITY == 0
-  #define LED_BUILTIN_ON   LOW
-  #define LED_BUILTIN_OFF  HIGH
+  #define __LED_BUILTIN_ON__   LOW
+  #define __LED_BUILTIN_OFF__  HIGH
 #else
-  #define LED_BUILTIN_ON   HIGH
-  #define LED_BUILTIN_OFF  LOW
+  #define __LED_BUILTIN_ON__   HIGH
+  #define __LED_BUILTIN_OFF__  LOW
 #endif
 
 // ============================================
 // FONCTIONS DE BASE
 // ============================================
-void ENABLE_LED_BUILTIN(void) {
-  pinMode(LED_BUILTIN, OUTPUT);
-  LED_BUILTIN_OFF();  // Éteindre la LED par défaut
-}
-
 void LED_BUILTIN_ON(void) {
-  digitalWrite(LED_BUILTIN, LED_BUILTIN_ON);
+  digitalWrite(LED_BUILTIN, __LED_BUILTIN_ON__);
 }
 
 void LED_BUILTIN_OFF(void) {
-  digitalWrite(LED_BUILTIN, LED_BUILTIN_OFF);
+  digitalWrite(LED_BUILTIN, __LED_BUILTIN_OFF__);
 }
 
 void LED_BUILTIN_TOGGLE(void) {
   digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
 }
 
+void ENABLE_LED_BUILTIN(void) {
+  pinMode(LED_BUILTIN, OUTPUT);
+  LED_BUILTIN_OFF();  // Éteindre la LED par défaut
+}
 // ============================================
 // FONCTIONS DE CLIGNOTEMENT AVEC RAPPORT CYCLIQUE
 // ============================================
