@@ -43,7 +43,7 @@ Une bibliothèque Arduino complète pour gérer les LED intégrées (LED_BUILTIN
 
 Ajoutez la dépendance à votre `platformio.ini` :
 
-platformio.ini
-```
-lib_deps = https://github.com/Fo170/PreciseTime-ESP.git
+```ini
+lib_deps = 
+    https://github.com/Fo170/PreciseTime-ESP.git
 
