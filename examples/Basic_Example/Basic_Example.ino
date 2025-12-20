@@ -34,8 +34,19 @@
 	 
 */
 
+#include <Arduino.h>
 #include "LED_BUILTIN.h"
+/*
+void setup() 
+{
+  Serial.begin(115200);
+  
+  delay(2000);
+  Serial.println("\nDebut");
 
+  //Serial.print("\n11.5V >>"), Serial.println(charge);
+}
+*/
 void testDutyCycleVariations() {
   Serial.println("=== Test des rapports cycliques ===");
   
@@ -68,7 +79,7 @@ void setup() {
   Serial.begin(115200);
   ENABLE_LED_BUILTIN(); // Initialise la LED
   
-  Serial.println("Démarrage des tests LED_BUILTIN");
+  Serial.println("\nDémarrage des tests LED_BUILTIN");
   
   LED_BUILTIN_ON();      // Allume la LED
   delay(1000);
@@ -134,6 +145,8 @@ void setup() {
   LED_BUILTIN_BLINK(300, 3);
   
   delay(3000);
+
+  Serial.println("=== signal SOS ===");
 }
 
 
