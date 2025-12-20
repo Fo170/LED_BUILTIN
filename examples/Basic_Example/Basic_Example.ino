@@ -1,4 +1,3 @@
-#include "LED_BUILTIN.h"
 /*
   Exemples d'utilisation de LED_BUILTIN.h
   ----
