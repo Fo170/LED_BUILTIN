@@ -39,30 +39,11 @@ Une bibliothèque Arduino complète pour gérer les LED intégrées (LED_BUILTIN
 2. Dans Arduino IDE : Croquis → Inclure une bibliothèque → Ajouter la bibliothèque .ZIP
 3. Sélectionnez le fichier ZIP téléchargé
 
-### Via Platformio :
-dans le fichier platformio.ini
+### Via PlatformIO (recommandé)
 
-; PlatformIO Project Configuration File
-;
-;   Build options: build flags, source filter
-;   Upload options: custom upload port, speed and extra flags
-;   Library options: dependencies, extra library storages
-;   Advanced options: extra scripting
-;
-; Please visit documentation for the other options and examples
-; https://docs.platformio.org/page/projectconf.html
+Ajoutez la dépendance à votre `platformio.ini` :
 
-[env:esp12e]
-platform = espressif8266
-board = esp12e
-framework = arduino
-monitor_speed = 115200
-lib_deps = https://github.com/Fo170/LED_BUILTIN.git
-
-[env:az-delivery-devkit-v4]
-platform = espressif32
-board = az-delivery-devkit-v4
-framework = arduino
-monitor_speed = 115200
-lib_deps = https://github.com/Fo170/LED_BUILTIN.git
+platformio.ini
+...
+lib_deps = https://github.com/Fo170/PreciseTime-ESP.git
 
