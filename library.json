@@ -1,11 +1,7 @@
-
-## 2. library.json
-
-```json
 {
   "name": "LED_BUILTIN",
-  "version": "1.2.0",
-  "description": "Complete library for managing built-in LEDs (LED_BUILTIN) on ESP8266 and ESP32 boards with extended GPIO support and advanced blinking functions",
+  "version": "2.0.0",
+  "description": "Non-blocking library for managing built-in LEDs (LED_BUILTIN) on ESP8266 and ESP32 boards with extended GPIO support, RGB LED support, and advanced blinking functions using millis()",
   "keywords": [
     "led",
     "builtin",
@@ -13,12 +9,22 @@
     "esp32",
     "gpio",
     "blink",
+    "non-blocking",
+    "millis",
     "duty-cycle",
+    "rgb",
+    "neopixel",
+    "ws2812",
     "heltec",
     "ttgo",
     "adafruit",
     "sparkfun",
-    "m5stack"
+    "m5stack",
+    "wemos",
+    "lolin",
+    "esp32-c3",
+    "esp32-s2",
+    "esp32-s3"
   ],
   "repository": {
     "type": "git",
@@ -27,7 +33,7 @@
   "authors": [
     {
       "name": "Fo170",
-      "email": "",
+      "email": "olivier.fournet@free.fr",
       "url": "https://github.com/Fo170",
       "maintainer": true
     }
@@ -42,43 +48,67 @@
   "headers": "LED_BUILTIN.h",
   "examples": [
     {
-      "name": "Basic Example",
+      "name": "Basic Non-Blocking Example",
       "base": "examples/Basic_Example"
     },
     {
-      "name": "Duty Cycle Example",
+      "name": "Network Indicator",
+      "base": "examples/Network_Indicator"
+    },
+    {
+      "name": "Duty Cycle Variations",
       "base": "examples/DutyCycle_Example"
     },
     {
-      "name": "Frequency Example",
+      "name": "Frequency Control",
       "base": "examples/Frequency_Example"
     },
     {
-      "name": "Pattern Example",
+      "name": "Custom Pattern",
       "base": "examples/Pattern_Example"
     },
     {
-      "name": "SOS Example",
+      "name": "SOS Signal",
       "base": "examples/SOS_Example"
     },
     {
-      "name": "Morse Example",
+      "name": "Morse Code",
       "base": "examples/Morse_Example"
+    },
+    {
+      "name": "RGB LED Colors",
+      "base": "examples/RGB_Example"
+    },
+    {
+      "name": "State Machine",
+      "base": "examples/StateMachine_Example"
+    },
+    {
+      "name": "Compatibility Mode",
+      "base": "examples/Compatibility_Example"
     }
   ],
   "export": {
     "exclude": [
       ".github",
+      ".git",
+      ".gitignore",
       "extras",
       "test",
+      "docs",
       "*.md",
-      "*.txt"
+      "*.txt",
+      ".vscode",
+      ".DS_Store"
     ]
   },
   "dependencies": {},
   "build": {
     "flags": [
-      "-I include"
-    ]
-  }
+      "-I include",
+      "-DLED_BUILTIN_VERSION=2.0.0"
+    ],
+    "libArchive": false
+  },
+  "version_note": "v2.0.0 - Major update: Non-blocking operation using millis(), RGB LED support (M5Stack ATOM - requires Adafruit NeoPixel library if used), state machine control, backwards compatibility mode"
 }
