@@ -1,7 +1,7 @@
 {
   "name": "LED_BUILTIN",
   "version": "2.0.0",
-  "description": "Non-blocking library for managing built-in LEDs (LED_BUILTIN) on ESP8266 and ESP32 boards with extended GPIO support, RGB LED support, and advanced blinking functions using millis()",
+  "description": "Non-blocking library for managing built-in LEDs (LED_BUILTIN) on ESP8266 and ESP32 boards with extended GPIO support, RGB LED support, and advanced blinking functions - Major update: Non-blocking operation using millis(), RGB LED support (M5Stack ATOM - requires Adafruit NeoPixel library if used), state machine control, backwards compatibility mode",
   "keywords": [
     "led",
     "builtin",
@@ -102,13 +102,17 @@
       ".DS_Store"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+  "adafruit/Adafruit NeoPixel": {
+    "version": "^1.12.0",
+    "optional": true
+  }
+} ,
   "build": {
     "flags": [
       "-I include",
       "-DLED_BUILTIN_VERSION=2.0.0"
     ],
     "libArchive": false
-  },
-  "version_note": "v2.0.0 - Major update: Non-blocking operation using millis(), RGB LED support (M5Stack ATOM - requires Adafruit NeoPixel library if used), state machine control, backwards compatibility mode"
+  }
 }

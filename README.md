@@ -346,7 +346,7 @@ void showError() {
 
 ## 📄 Licence
 
-MIT License - Libre d'utilisation pour projets personnels et commerciaux
+GPL-3.0 license
 
 ## 🤝 Contribution
 
