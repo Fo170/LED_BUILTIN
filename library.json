@@ -1,8 +1,8 @@
 {
-"name": "LED_BUILTIN",
-"version": "2.0.0",
-"description": "Non-blocking library for managing built-in LEDs (LED_BUILTIN) on ESP8266 and ESP32 boards with extended GPIO support, RGB LED support, and advanced blinking functions using millis()",
-"keywords": [
+    "name": "LED_BUILTIN",
+    "version": "2.0.0",
+    "description": "Non-blocking library for managing built-in LEDs (LED_BUILTIN) on ESP8266 and ESP32 boards with extended GPIO support, RGB LED support, and advanced blinking functions using millis()",
+    "keywords": [
     "led",
     "builtin",
     "esp8266",
@@ -67,7 +67,7 @@
     ]
   },
   "dependencies": {
-    "adafruit/Adafruit NeoPixel": {
+    "Adafruit NeoPixel": {
       "version": "^1.12.0",
       "optional": true
     }
