@@ -1,7 +1,7 @@
 {
   "name": "LED_BUILTIN",
   "version": "2.0.0",
-  "description": "Non-blocking library for managing built-in LEDs (LED_BUILTIN) on ESP8266 and ESP32 boards with extended GPIO support, RGB LED support, and advanced blinking functions - Major update: Non-blocking operation using millis(), RGB LED support (M5Stack ATOM - requires Adafruit NeoPixel library if used), state machine control, backwards compatibility mode",
+  "description": "Non-blocking library for managing built-in LEDs (LED_BUILTIN) on ESP8266 and ESP32 boards with extended GPIO support, RGB LED support, and advanced blinking functions using millis()",
   "keywords": [
     "led",
     "builtin",
@@ -50,42 +50,6 @@
     {
       "name": "Basic Non-Blocking Example",
       "base": "examples/Basic_Example"
-    },
-    {
-      "name": "Network Indicator",
-      "base": "examples/Network_Indicator"
-    },
-    {
-      "name": "Duty Cycle Variations",
-      "base": "examples/DutyCycle_Example"
-    },
-    {
-      "name": "Frequency Control",
-      "base": "examples/Frequency_Example"
-    },
-    {
-      "name": "Custom Pattern",
-      "base": "examples/Pattern_Example"
-    },
-    {
-      "name": "SOS Signal",
-      "base": "examples/SOS_Example"
-    },
-    {
-      "name": "Morse Code",
-      "base": "examples/Morse_Example"
-    },
-    {
-      "name": "RGB LED Colors",
-      "base": "examples/RGB_Example"
-    },
-    {
-      "name": "State Machine",
-      "base": "examples/StateMachine_Example"
-    },
-    {
-      "name": "Compatibility Mode",
-      "base": "examples/Compatibility_Example"
     }
   ],
   "export": {
@@ -103,11 +67,11 @@
     ]
   },
   "dependencies": {
-  "adafruit/Adafruit NeoPixel": {
-    "version": "^1.12.0",
-    "optional": true
-  }
-} ,
+    "adafruit/Adafruit NeoPixel": {
+      "version": "^1.12.0",
+      "optional": true
+    }
+  },
   "build": {
     "flags": [
       "-I include",
