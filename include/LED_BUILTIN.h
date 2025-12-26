@@ -1,6 +1,6 @@
 /*
   LED_BUILTIN.h - Gestion non-bloquante des LED intégrées pour ESP8266/ESP32
-  Version 2.0 - Sans delay(), utilise millis()
+  Version 2.0.3 - Sans delay(), utilise millis()
   
   Choisissez la fonction qui correspond le mieux à votre besoin :
   
