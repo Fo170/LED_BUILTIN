@@ -69,7 +69,7 @@
   "build": {
     "flags": [
       "-I include",
-      "-DLED_BUILTIN_VERSION=2.0.0"
+      "-DLED_BUILTIN_VERSION=2.0.3"
     ],
     "libArchive": false
   }
