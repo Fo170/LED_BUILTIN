@@ -1,18 +1,68 @@
-# LED_BUILTIN Library v2.0.3
+# LED_BUILTIN Library v2.2.0
 
 Une bibliothèque Arduino **non-bloquante** pour gérer les LED intégrées (LED_BUILTIN) sur les cartes ESP8266 et ESP32 avec support étendu des GPIO, fonctions de clignotement avancées et gestion des LED RGB.
+## 📋 Cartes supportées (extrait)
 
-## ✨ Nouveautés v2.0
+| Carte | GPIO par défaut | Broche Dx | Type / Couleur | Logique | Détection auto |
+|-------|-----------------|-----------|----------------|---------|----------------|
+| **ESP8266** |
+| NodeMCU 1.0 | 2 | D4 | Bleue | Inversée | ✅ |
+| Wemos D1 mini | 2 | D4 | Bleue | Inversée | ✅ |
+| Adafruit Feather HUZZAH | 0 | D3 | Rouge | Inversée | ✅ |
+| SparkFun Thing | 5 | D1 | Bleue | Inversée | ✅ |
+| **ESP32** |
+| DevKit / WROVER | 2 | D2 | Bleue | Standard | ✅ |
+| Heltec WiFi Kit 32 V1/V2 | 25 | — | Blanche | Standard | ✅ |
+| Heltec WiFi Kit 32 **V3** | **35 ou 38** | — | Blanche | Standard | **❌ choix obligatoire** |
+| TTGO T-Display | 4 | D4 | Verte | Standard | ✅ |
+| TTGO T-Display-S3 | 38 | — | RGB | Standard | ✅ |
+| Adafruit Feather ESP32-C6 | **8 ou 18** | — | RGB | Standard | **❌ choix obligatoire** |
+| M5Stack ATOM | 27 | — | RGB WS2812 | — | ✅ |
+| ESP32-CAM | 4 | — | Flash blanche | Standard | ✅ |
+| ESP32-S3 DevKit | 48 | — | RGB | Standard | ✅ |
+| ESP32-C3 | 8 | — | RGB | Standard | ✅ |
 
-- ⚡ **Fonctionnement non-bloquant** utilisant `millis()` au lieu de `delay()`
-- 🎨 **Support LED RGB** (M5Stack ATOM avec WS2812) - *dépendance optionnelle*
-- 🎯 **API simplifiée** avec fonctions `_START()` et `LED_BUILTIN_UPDATE()`
+> Pour une liste complète, ouvrez [`LED_BUILTIN.h`](include/LED_BUILTIN.h) – chaque section est commentée (couleur, broche Dx, polarité).
+
+---
+
+## ⚙️ Configuration obligatoire (ESP32-C6 & Heltec V3)
+
+Avant **l’include**, définissez **une seule** des deux macros :
+
+**HELTEC_V3** (certains ont la LED sur GPIO 35, d’autres sur 38) :
+```cpp
+#define HELTEC_V3_LED_GPIO35 // ou HELTEC_V3_LED_GPIO38
+#include "LED_BUILTIN.h"
+```
+
+**ESP32-C6** (certains ont la LED sur GPIO 8, d’autres sur 18) :
+```cpp
+#define ESP32_C6_LED_GPIO8   // ou ESP32_C6_LED_GPIO18
+#include "LED_BUILTIN.h"
+```
+
+Si aucune macro n’est fournie → erreur de compilation explicite.
+
+# LED_BUILTIN Library v2.1.0
+
+Bibliothèque Arduino **non-bloquante** pour piloter les LED intégrées (LED_BUILTIN) des cartes ESP8266 / ESP32, avec gestion **automatisée de la polarité**, **motifs personnalisés**, **LED RGB** (WS2812) et **support étendu** des dernières cartes LilyGO, Heltec, Adafruit, M5Stack, etc.
+
+> ⚠️ **Nouveauté v2.1.0** : pour **ESP32-C6** et **Heltec WiFi Kit 32 V3** le programmeur **doit choisir** la broche LED (8 ou 18, 35 ou 38) via une macro **avant** l’include – voir section [Configuration obligatoire](#-configuration-obligatoire).
+> 
+## ✨ Nouveautés v2.0.3
+
 - 🔄 **Contrôle en temps réel** - arrêt, pause, vérification d'état
 - 🔙 **Mode compatibilité** optionnel pour l'ancienne API bloquante
-- 📦 **Sans dépendance obligatoire** - Adafruit NeoPixel requis uniquement pour RGB
 
 ## 🚀 Fonctionnalités
-
+- ⚡ **Fonctionnement non-bloquant** utilisant `millis()` au lieu de `delay()`
+- 🎨 **LED RGB** native (M5Stack ATOM avec WS2812, ESP32-S3 DevKit, etc.) via **Adafruit NeoPixel** (dépendance optionnelle)  
+- 🎯 API simple : `_START()` + `LED_BUILTIN_UPDATE()` dans `loop()`  
+- 🔙 Mode **compatibilité bloquante** disponible (`LED_BUILTIN_COMPATIBILITY_MODE`)  
+- 📦 **Aucune dépendance** pour les LED classiques ; NeoPixel uniquement si RGB utilisée  
+- 🔄 **Polarité automatique** (LOW ou HIGH active) – surcharge possible  
+- 🆕 **Détection élargie** : LilyGO T-C6, Heltec V3, Adafruit Feather ESP32-C6, Seeed XIAO-C3/C6, etc.
 - **Détection automatique** des cartes ESP8266 et ESP32
 - **Support complet** de plus de 20 modèles de cartes différentes
 - **Gestion automatique de la polarité** (LOW/HIGH active)
@@ -69,12 +119,12 @@ Ajoutez la dépendance à votre `platformio.ini` :
 ```ini
 # Pour cartes standard (ESP32, ESP8266, etc.)
 lib_deps = 
-    https://github.com/Fo170/LED_BUILTIN.git@^2.0.3
+    https://github.com/Fo170/LED_BUILTIN.git@^2.2.0
 
 # Pour cartes avec LED RGB (M5Stack ATOM)
 lib_deps = 
-    https://github.com/Fo170/LED_BUILTIN.git@^2.0.3
-    adafruit/Adafruit NeoPixel@^1.12.0
+    https://github.com/Fo170/LED_BUILTIN.git@^2.2.0
+    adafruit/Adafruit NeoPixel@^1.12.0   ; uniquement si LED RGB utilisée
 ```
 
 ### Dépendances
