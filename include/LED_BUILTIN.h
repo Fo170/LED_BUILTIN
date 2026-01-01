@@ -1,141 +1,416 @@
-/*
-  LED_BUILTIN.h - Gestion non-bloquante des LED intégrées pour ESP8266/ESP32
-  Version 2.0.3 - Sans delay(), utilise millis()
-  
-  Choisissez la fonction qui correspond le mieux à votre besoin :
-  
-  Pour un simple clignotement 50% : LED_BUILTIN_BLINK_START()
-  Pour un rapport cyclique spécifique : LED_BUILTIN_BLINK_DUTY_START()
-  Pour un contrôle précis des temps ON/OFF : LED_BUILTIN_BLINK_TIMING_START()
-  Pour un contrôle par fréquence : LED_BUILTIN_BLINK_FREQ_START()
-  Pour des motifs complexes : LED_BUILTIN_BLINK_PATTERN_START()
-  Pour un signal SOS : LED_BUILTIN_SOS_START()
-  
-  IMPORTANT : Appelez LED_BUILTIN_UPDATE() dans votre loop() !
-  
-  Exemples :
-  void setup() {
-    ENABLE_LED_BUILTIN();
-    LED_BUILTIN_BLINK_START(500, 5); // 5 clignotements de 500ms
-  }
-  
-  void loop() {
-    LED_BUILTIN_UPDATE(); // À appeler à chaque itération
-    // Votre code ici...
-  }
-*/
+//  --------------------------------------------------------------------------
+//  LED_BUILTIN.h  –  Gestion non-bloquante des LED intégrées ESP8266 / ESP32
+//  Version 2.2.0
+//  --------------------------------------------------------------------------
+//  ☞  APPELER  LED_BUILTIN_UPDATE()  DANS  loop()  !
+//  --------------------------------------------------------------------------
+//  Broches & remarques rapides (voir détails plus bas) :
+//  –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+//  ESP8266
+//  • NodeMCU/Wemos D1 mini  →  GPIO 2  (D4)  LED bleue  –  LOGIQUE INVERSÉE
+//  • Adafruit Feather       →  GPIO 0  (D3)  LED rouge  –  INVERSÉE
+//  • SparkFun Thing         →  GPIO 5  (D1)  LED bleue  –  INVERSÉE
+//  • Heltec WiFi Kit 8      →  GPIO 2  (D4)  LED bleue  –  INVERSÉE
+//  • ESP-01                 →  GPIO 2       LED bleue  –  INVERSÉE
+//  –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+//  ESP32
+//  • DevKit/WROOM/WROVER    →  GPIO 2  (D2)  LED bleue  –  NON INVERSÉE
+//  • Heltec WiFi Kit 32 V1  →  GPIO 25       LED blanche –  NON INVERSÉE
+//  • Heltec WiFi Kit 32 V3  →  GPIO 35       LED blanche –  NON INVERSÉE
+//  • TTGO T-Display         →  GPIO 4  (D4)  LED verte  –  NON INVERSÉE
+//  • TTGO T-Display-S3      →  GPIO 38       LED RGB   –  NON INVERSÉE
+//  • Adafruit Feather       →  GPIO 13 (D13) LED rouge  –  NON INVERSÉE
+//  • M5Stack Core           →  GPIO 2  (D2)  LED rouge  –  NON INVERSÉE
+//  • M5Stack ATOM           →  GPIO 27       LED RGB WS2812
+//  • ESP32-CAM              →  GPIO 4        LED flash  –  NON INVERSÉE
+//  • ESP32-S2               →  GPIO 18       LED bleue  –  NON INVERSÉE
+//  • ESP32-S3 DevKit        →  GPIO 48       LED RGB   –  NON INVERSÉE
+//  • ESP32-C3               →  GPIO 8        LED RGB   –  NON INVERSÉE
+//  --------------------------------------------------------------------------
 
-// ============================================
-// DÉTECTION DE LA PLATEFORME
-// ============================================
+#ifndef LED_BUILTIN_H
+#define LED_BUILTIN_H
+#include <Arduino.h>
+
+// ----------------------------------------------------------
+// Détection de la plate-forme
+// ----------------------------------------------------------
 #if defined(ESP8266)
   #define PLATFORM_ESP8266
 #elif defined(ESP32)
   #define PLATFORM_ESP32
 #endif
 
-// ============================================
-// DÉFINITIONS PAR DÉFAUT
-// ============================================
+// ----------------------------------------------------------
+// Valeurs par défaut (au cas où aucune carte n’est reconnue)
+// ----------------------------------------------------------
+#if defined(PLATFORM_ESP8266) && !defined(LED_BUILTIN)
+  #define LED_BUILTIN 2          // GPIO 2 (D4) – logique inversée
+#elif defined(PLATFORM_ESP32) && !defined(LED_BUILTIN)
+  #define LED_BUILTIN 2          // GPIO 2 (D2) – logique normale
+#endif
+
+// ==========================================================
+//  ESP 8266
+// ==========================================================
 #if defined(PLATFORM_ESP8266)
-  #ifndef LED_BUILTIN
-    #define LED_BUILTIN 2  // GPIO2 (D4) - NodeMCU, Wemos D1 mini, ESP-12
+
+  // ---------- NodeMCU 1.0 (ESP-12E) ----------------------
+  #if defined(ARDUINO_ESP8266_NODEMCU_ESP12E) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D4 – LED bleue – INVERSÉE
   #endif
-  
-#elif defined(PLATFORM_ESP32)
-  #ifndef LED_BUILTIN
-    #define LED_BUILTIN 2  // GPIO2 - ESP32 DevKit, DOIT ESP32
+
+  // ---------- NodeMCU 0.9 (ESP-12) -----------------------
+  #if defined(ARDUINO_ESP8266_NODEMCU_ESP12) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 16       // D0 – LED bleue – INVERSÉE
+  #endif
+
+  // ---------- WeMos / LOLIN --------------------------------
+  #if (defined(ARDUINO_ESP8266_WEMOS_D1MINI)       || \
+       defined(ARDUINO_ESP8266_WEMOS_D1MINIPRO)    || \
+       defined(ARDUINO_ESP8266_WEMOS_D1MINILITE)   || \
+       defined(ARDUINO_LOLIN_D1MINI)                || \
+       defined(ARDUINO_LOLIN_D1MINIPRO)             || \
+       defined(ARDUINO_LOLIN_D1MINILITE))           && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D4 – LED bleue – INVERSÉE
+  #endif
+  #if (defined(ARDUINO_ESP8266_WEMOS_D1R1) || defined(ARDUINO_LOLIN_D1R1)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 5        // D1 – LED bleue – INVERSÉE
+  #endif
+  #if (defined(ARDUINO_ESP8266_WEMOS_D1R2) || defined(ARDUINO_LOLIN_D1R2)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D4 – LED bleue – INVERSÉE
+  #endif
+
+  // ---------- Adafruit ------------------------------------
+  #if (defined(ARDUINO_ESP8266_ADAFRUIT_HUZZAH) || \
+       defined(ARDUINO_ESP8266_ADAFRUIT_FEATHER_HUZZAH)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 0        // D3 – LED rouge – INVERSÉE
+  #endif
+
+  // ---------- SparkFun ------------------------------------
+  #if (defined(ARDUINO_ESP8266_SPARKFUN_THING) || \
+       defined(ARDUINO_ESP8266_SPARKFUN_THINGDEV)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 5        // D1 – LED bleue – INVERSÉE
+  #endif
+
+  // ---------- LilyGO --------------------------------------
+  #if defined(ARDUINO_ESP8266_LILYGO_T_OI) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D4 – LED bleue – INVERSÉE
+  #endif
+
+  // ---------- Heltec --------------------------------------
+  #if defined(ARDUINO_ESP8266_HELTEC_WIFI_KIT_8) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D4 – LED bleue – INVERSÉE
+  #endif
+
+  // ---------- DFRobot -------------------------------------
+  #if defined(ARDUINO_ESP8266_DFROBOT_FIREBEETLE) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D4 – LED bleue – INVERSÉE
+  #endif
+
+  // ---------- Seeed ---------------------------------------
+  #if defined(ARDUINO_ESP8266_SEED_WIO) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D4 – LED bleue – INVERSÉE
+  #endif
+
+  // ---------- Olimex --------------------------------------
+  #if defined(ARDUINO_ESP8266_OLIMEX_MOD_WIFI_ESP8266) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D4 – LED bleue – INVERSÉE
+  #endif
+
+  // ---------- ESPino / Phoenix ----------------------------
+  #if defined(ARDUINO_ESP8266_ESPINO) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 15       // D8 – LED bleue – INVERSÉE
+  #endif
+  #if defined(ARDUINO_ESP8266_PHOENIX_1_0) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D4 – LED bleue – INVERSÉE
+  #endif
+
+  // ---------- ESP-01 (aucune LED de board) ---------------
+  #if defined(ARDUINO_ESP8266_ESP01) && !defined(LED_BUILTIN)
+    // laissé volontairement vide – pas de LED sur la board
+	// Pas de LED visible sur le module ESP-01 ; l’utilisateur
+    // peut connecter une LED externe sur GPIO 2 si désiré.
+  #endif
+#endif // PLATFORM_ESP8266
+
+// ==========================================================
+//  ESP 32
+// ==========================================================
+#if defined(PLATFORM_ESP32)
+
+  // ---------- DevKit / WROVER / WROOM ---------------------
+  #if (defined(ARDUINO_ESP32_DEV)     || \
+       defined(ARDUINO_ESP32_DEVKIT)  || \
+       defined(ARDUINO_ESP32_WROVER)  || \
+       defined(ARDUINO_ESP32_WROOM))  && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D2 – LED bleue – NON INVERSÉE
+  #endif
+
+  // ---------- Node32s -------------------------------------
+  #if defined(ARDUINO_ESP32_NODE32S) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D2 – LED bleue – NON INVERSÉE
+  #endif
+
+  // ---------- TTGO / LilyGO -------------------------------
+  #if (defined(ARDUINO_TTGO_T_DISPLAY) || defined(ARDUINO_LILYGO_T_DISPLAY)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 4        // D4 – LED verte – NON INVERSÉE
+  #endif
+  #if (defined(ARDUINO_TTGO_T_DISPLAY_S3) || defined(ARDUINO_LILYGO_T_DISPLAY_S3)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 38       // GPIO 38 – LED RGB – NON INVERSÉE
+  #endif
+  #if (defined(ARDUINO_TTGO_T_QT) || defined(ARDUINO_LILYGO_T_QT)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 4        // D4 – LED verte – NON INVERSÉE
+  #endif
+  #if (defined(ARDUINO_TTGO_T_BEAM) || defined(ARDUINO_LILYGO_T_BEAM)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D2 – LED bleue – NON INVERSÉE
+  #endif
+  #if (defined(ARDUINO_TTGO_T_CAMERA) || defined(ARDUINO_LILYGO_T_CAMERA)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 4        // GPIO 4 – LED flash – NON INVERSÉE
+  #endif
+  #if (defined(ARDUINO_TTGO_T_WATCH) || defined(ARDUINO_LILYGO_T_WATCH)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D2 – LED bleue – NON INVERSÉE
+  #endif
+  #if (defined(ARDUINO_TTGO_LORA32_V1) || defined(ARDUINO_TTGO_LORA32_V2)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D2 – LED bleue – NON INVERSÉE
+  #endif
+  #if defined(TTGO_T7_V14) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 22       // GPIO 22 – LED bleue – NON INVERSÉE
+  #endif
+  #if defined(TTGO_T7_MINI32) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 22       // GPIO 22 – LED bleue – NON INVERSÉE
+  #endif
+
+  // ---------- Heltec --------------------------------------
+  #if (defined(ARDUINO_HELTEC_WIFI_KIT_32)        || \
+       defined(ARDUINO_HELTEC_WIFI_KIT_32_V2)     || \
+       defined(ARDUINO_HELTEC_WIFI_LORA_32)       || \
+       defined(ARDUINO_HELTEC_WIFI_LORA_32_V2)    || \
+       defined(HELTEC_WIFI_LORA_32)              || \
+       defined(HELTEC_WIFI_LORA_32_V2)           || \
+       defined(ARDUINO_HELTEC_WIRELESS_STICK)     || \
+       defined(ARDUINO_HELTEC_WIRELESS_STICK_LITE)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 25       // GPIO 25 – LED blanche – NON INVERSÉE
+  #endif
+// ----------------------------------------------------------
+//  Heltec WiFi Kit 32 V3  ––  choix obligatoire - LED blanche – NON INVERSÉE
+// ----------------------------------------------------------
+#if defined(ARDUINO_HELTEC_WIFI_KIT_32_V3) || defined(ARDUINO_HELTEC_WIFI_LORA_32_V3)
+  #if !defined(HELTEC_V3_LED_GPIO35) && !defined(HELTEC_V3_LED_GPIO38)
+    #error "Heltec V3 board detected : please define either HELTEC_V3_LED_GPIO35 or HELTEC_V3_LED_GPIO38 before including LED_BUILTIN.h"
+  #endif
+  #if defined(HELTEC_V3_LED_GPIO35) && defined(HELTEC_V3_LED_GPIO38)
+    #error "Both HELTEC_V3_LED_GPIO35 and HELTEC_V3_LED_GPIO38 are defined : choose only one"
+  #endif
+  #if !defined(LED_BUILTIN)
+    #ifdef HELTEC_V3_LED_GPIO35
+      #define LED_BUILTIN 35
+    #elif defined(HELTEC_V3_LED_GPIO38)
+      #define LED_BUILTIN 38
+    #endif
+  #endif
+#endif
+  // ---------- Adafruit ------------------------------------
+  #if (defined(ARDUINO_FEATHER_ESP32)       || \
+       defined(ARDUINO_FEATHER_ESP32_V2)    || \
+       defined(ADAFRUIT_FEATHER_ESP32)      || \
+       defined(ADAFRUIT_HUZZAH32)            || \
+       defined(ARDUINO_METRO_ESP32)         || \
+       defined(ARDUINO_ESP32_SAOLA_S2))     && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 13       // D13 – LED rouge – NON INVERSÉE
+  #endif
+  #if defined(ARDUINO_FEATHER_ESP32_S2_TFT) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 42       // GPIO 42 – LED RGB – NON INVERSÉE
+  #endif
+  #if (defined(ARDUINO_FEATHER_ESP32_S3) || defined(ARDUINO_ESP32_SAOLA_S3)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D2 – LED RGB – NON INVERSÉE
+  #endif
+  #if defined(ARDUINO_FEATHER_ESP32_C3) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 8        // GPIO 8 – LED RGB – NON INVERSÉE
+  #endif
+  #if defined(ARDUINO_FEATHER_ESP32_C6) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 15       // GPIO 15 – LED RGB – NON INVERSÉE
+  #endif
+
+  // ---------- SparkFun ------------------------------------
+  #if defined(ARDUINO_SPARKFUN_ESP32_THING) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 5        // GPIO 5 – LED bleue – NON INVERSÉE
+  #endif
+  #if (defined(ARDUINO_SPARKFUN_ESP32_THING_PLUS)       || \
+       defined(ARDUINO_SPARKFUN_THING_PLUS)             || \
+       defined(ARDUINO_SPARKFUN_ESP32_S3_THING_PLUS)    || \
+       defined(ARDUINO_SPARKFUN_REDBOARD_ESP32))        && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 13       // D13 – LED bleue – NON INVERSÉE
+  #endif
+  #if defined(ARDUINO_SPARKFUN_ESP32_C3_THING_PLUS) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 8        // GPIO 8 – LED RGB – NON INVERSÉE
+  #endif
+
+  // ---------- M5Stack -------------------------------------
+  #if (defined(ARDUINO_M5STACK_CORE) || \
+       defined(ARDUINO_M5STACK_FIRE) || \
+       defined(ARDUINO_M5STACK_BASIC)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D2 – LED rouge – NON INVERSÉE
+  #endif
+  #if defined(ARDUINO_M5STACK_CORE2) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 25       // GPIO 25 – LED rouge – NON INVERSÉE
+  #endif
+  #if defined(ARDUINO_M5STACK_ATOM) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 27       // GPIO 27 – LED RGB WS2812
+    #define LED_BUILTIN_IS_RGB   1
+  #endif
+  #if (defined(ARDUINO_M5STICKC) || defined(ARDUINO_M5STICK_C) || defined(ARDUINO_M5STICKC_PLUS)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 10       // GPIO 10 – LED orange – NON INVERSÉE
+  #endif
+
+  // ---------- DFRobot -------------------------------------
+  #if (defined(ARDUINO_DFROBOT_FIREBEETLE_ESP32)      || \
+       defined(ARDUINO_DFROBOT_FIREBEETLE_ESP32_E)   || \
+       defined(ARDUINO_DFROBOT_FIREBEETLE_ESP32_S3)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D2 – LED bleue – NON INVERSÉE
+  #endif
+  #if defined(ARDUINO_DFROBOT_FIREBEETLE_ESP32_C3) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 8        // GPIO 8 – LED RGB – NON INVERSÉE
+  #endif
+  #if defined(ARDUINO_DFROBOT_FIREBEETLE_ESP32_C6) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 8        // GPIO 8 – LED RGB – NON INVERSÉE
+  #endif
+  #if defined(ARDUINO_DFROBOT_FIREBEETLE_ESP32_C6_N16) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 18       // GPIO 18 – LED RGB – NON INVERSÉE
+  #endif
+
+  // ---------- Seeed ---------------------------------------
+  #if (defined(ARDUINO_SEEED_WIO_ESP32)      || \
+       defined(ARDUINO_SEEED_WIO_ESP32_S3)   || \
+       defined(ARDUINO_SEEED_XIAO_ESP32_S3)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D2 – LED bleue – NON INVERSÉE
+  #endif
+  #if (defined(ARDUINO_SEEED_WIO_ESP32_C3) || \
+       defined(ARDUINO_SEEED_XIAO_ESP32_C3) || \
+       defined(ARDUINO_SEEED_WIO_ESP32_C6) || \
+       defined(ARDUINO_SEEED_XIAO_ESP32_C6)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 8        // GPIO 8 – LED RGB – NON INVERSÉE
+  #endif
+
+  // ---------- Olimex --------------------------------------
+  #if (defined(ARDUINO_OLIMEX_ESP32_EVB)         || \
+       defined(ARDUINO_OLIMEX_ESP32_GATEWAY)     || \
+       defined(ARDUINO_OLIMEX_ESP32_POE)         || \
+       defined(ARDUINO_OLIMEX_ESP32_POE_ISO)     || \
+       defined(ARDUINO_OLIMEX_ESP32_S3_DEVKIT_LIPO)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D2 – LED verte – NON INVERSÉE
+  #endif
+  #if defined(ARDUINO_OLIMEX_ESP32_C3_DEVKIT_LIPO) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 8        // GPIO 8 – LED RGB – NON INVERSÉE
+  #endif
+
+  // ---------- LOLIN / Wemos ESP32 -------------------------
+  #if (defined(ARDUINO_LOLIN_D32)     || \
+       defined(ARDUINO_LOLIN_D32_PRO) || \
+       defined(ARDUINO_LOLIN32)       || \
+       defined(ARDUINO_LOLIN32_LITE) || \
+       defined(WEMOS_LOLIN32)        || \
+       defined(LOLIN_D32))           && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 5        // GPIO 5 – LED bleue – NON INVERSÉE
+  #endif
+  #if defined(WEMOS_D1_R32) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D2 – LED bleue – NON INVERSÉE
+  #endif
+
+  // ---------- ESP32-CAM & dérivés -------------------------
+  #if (defined(ARDUINO_ESP32_CAM) || defined(CAMERA_MODEL_AI_THINKER)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 4        // GPIO 4 – LED flash blanche – NON INVERSÉE
+  #endif
+  #if defined(ARDUINO_ESP32_EYE) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 2        // D2 – LED bleue – NON INVERSÉE
+  #endif
+
+  // ---------- ESP32-Sx bare-chips -------------------------
+  #if (defined(ARDUINO_ESP32_S2_DEV) || defined(CONFIG_IDF_TARGET_ESP32S2) || defined(ESP32S2)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 18       // GPIO 18 – LED bleue – NON INVERSÉE
+  #endif
+  #if (defined(ARDUINO_ESP32_S3_DEV) || defined(CONFIG_IDF_TARGET_ESP32S3) || defined(ESP32S3)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 48       // GPIO 48 – LED RGB – NON INVERSÉE
+  #endif
+  #if (defined(ARDUINO_ESP32_C3_DEV) || defined(CONFIG_IDF_TARGET_ESP32C3) || defined(ESP32C3)) && !defined(LED_BUILTIN)
+    #undef LED_BUILTIN
+    #define LED_BUILTIN 8        // GPIO 8 – LED RGB – NON INVERSÉE
+  #endif
+  // ----------------------------------------------------------
+//  ESP32-C6  ––  choix obligatoire - LED RGB – NON INVERSÉE
+// ----------------------------------------------------------
+#if defined(ARDUINO_ESP32_C6_DEV)
+  #if !defined(ESP32_C6_LED_GPIO8) && !defined(ESP32_C6_LED_GPIO18)
+    #error "ESP32-C6 board detected : please define either ESP32_C6_LED_GPIO8 or ESP32_C6_LED_GPIO18 before including LED_BUILTIN.h"
+  #endif
+  #if defined(ESP32_C6_LED_GPIO8) && defined(ESP32_C6_LED_GPIO18)
+    #error "Both ESP32_C6_LED_GPIO8 and ESP32_C6_LED_GPIO18 are defined : choose only one"
+  #endif
+  #if !defined(LED_BUILTIN)
+    #ifdef ESP32_C6_LED_GPIO8
+      #define LED_BUILTIN 8
+    #elif defined(ESP32_C6_LED_GPIO18)
+      #define LED_BUILTIN 18
+    #endif
   #endif
 #endif
 
-// ============================================
-// DÉTECTION SPÉCIFIQUE DES CARTES ESP32
-// ============================================
-#if defined(PLATFORM_ESP32)
-  
-  // Heltec WiFi LoRa 32 - LED blanche sur GPIO25
-  #if defined(HELTEC_WIFI_LORA_32) || defined(HELTEC_WIFI_LORA_32_V2)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 25
-  
-  // TTGO T7 - LED sur GPIO22
-  #elif defined(TTGO_T7_V14) || defined(TTGO_T7_MINI32)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 22
-  
-  // TTGO T-Display - LED sur GPIO4
-  #elif defined(TTGO_T_DISPLAY)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 4
-  
-  // Adafruit Feather ESP32 / HUZZAH32 - LED rouge sur GPIO13
-  #elif defined(ADAFRUIT_FEATHER_ESP32) || defined(ADAFRUIT_HUZZAH32)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 13
-  
-  // SparkFun ESP32 Thing - LED bleue sur GPIO5
-  #elif defined(ESP32_THING)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 5
-  
-  // SparkFun Thing Plus - LED bleue sur GPIO13
-  #elif defined(ARDUINO_SPARKFUN_THING_PLUS)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 13
-  
-  // Wemos/Lolin32 - LED bleue sur GPIO5
-  #elif defined(WEMOS_LOLIN32) || defined(LOLIN_D32)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 5
-  
-  // Wemos D1 R32 - LED sur GPIO2
-  #elif defined(WEMOS_D1_R32)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 2
-  
-  // M5Stack Core2/Fire/Basic - LED rouge sur GPIO2
-  #elif defined(ARDUINO_M5STACK_CORE2) || defined(ARDUINO_M5STACK_FIRE) || defined(ARDUINO_M5STACK_BASIC)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 2
-  
-  // M5Stick-C - LED orange sur GPIO10
-  #elif defined(ARDUINO_M5STICK_C)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 10
-  
-  // M5Stack ATOM - LED RGB WS2812 sur GPIO27
-  #elif defined(ARDUINO_M5STACK_ATOM)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 27
-    #define LED_BUILTIN_IS_RGB 1  // LED RGB WS2812
-  
-  // ESP32-C3 - LED RGB sur GPIO8 (certains modèles)
-  #elif defined(CONFIG_IDF_TARGET_ESP32C3) || defined(ESP32C3)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 8
-  
-  // ESP32-S2 - LED sur GPIO18
-  #elif defined(CONFIG_IDF_TARGET_ESP32S2) || defined(ESP32S2)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 18
-  
-  // ESP32-S3 - LED RGB sur GPIO48 (ESP32-S3-DevKitC)
-  #elif defined(CONFIG_IDF_TARGET_ESP32S3) || defined(ESP32S3)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 48
-  
-  // LILYGO T-Display-S3 - LED sur GPIO38
-  #elif defined(ARDUINO_LILYGO_T_DISPLAY_S3)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 38
-  
-  // ESP32-CAM (AI-Thinker) - LED flash sur GPIO4
-  #elif defined(CAMERA_MODEL_AI_THINKER)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 4  // LED flash blanche
-  
+  // ---------- Generic (aucune LED) ------------------------
+  #if defined(ARDUINO_ESP32_GENERIC) && !defined(LED_BUILTIN)
+    // laissé volontairement vide – pas de LED sur le module nu
   #endif
-  
 #endif // PLATFORM_ESP32
 
 // ============================================
@@ -194,6 +469,7 @@
 
 // ============================================
 // GESTION LED RGB (M5Stack ATOM, etc.)
+// n’oublie pas que l’adresse du pixel est 0 (pas 1) 
 // ============================================
 #ifdef LED_BUILTIN_IS_RGB
   // Vérifier si Adafruit_NeoPixel est disponible
