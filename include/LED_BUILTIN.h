@@ -453,6 +453,9 @@
       // Par défaut HIGH active pour ESP32
       #define LED_BUILTIN_POLARITY 1
     #endif
+  #else
+    // Default polarity if no platform is defined
+    #define LED_BUILTIN_POLARITY 1
   #endif
 #endif
 
