@@ -1,6 +1,6 @@
 {
     "name": "LED_BUILTIN",
-    "version": "2.3.0",
+    "version": "2.3.1",
     "description": "Non-blocking library for managing built-in LEDs (LED_BUILTIN) on ESP8266 and ESP32 boards with extended GPIO support, RGB LED support, and advanced blinking functions using millis()",
     "keywords": [
     "led",
