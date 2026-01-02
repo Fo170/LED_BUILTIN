@@ -1,4 +1,4 @@
-# LED_BUILTIN Library v2.3.0
+# LED_BUILTIN Library v2.3.1
 
 Une bibliothèque Arduino **non-bloquante** pour gérer les LED intégrées (LED_BUILTIN) sur les cartes ESP8266 et ESP32 avec support étendu des GPIO, fonctions de clignotement avancées et gestion des LED RGB.
 ## 📋 Cartes supportées (extrait)
@@ -119,11 +119,11 @@ Ajoutez la dépendance à votre `platformio.ini` :
 ```ini
 # Pour cartes standard (ESP32, ESP8266, etc.)
 lib_deps = 
-    https://github.com/Fo170/LED_BUILTIN.git@^2.3.0
+    https://github.com/Fo170/LED_BUILTIN.git@^2.3.1
 
 # Pour cartes avec LED RGB (M5Stack ATOM)
 lib_deps = 
-    https://github.com/Fo170/LED_BUILTIN.git@^2.3.0
+    https://github.com/Fo170/LED_BUILTIN.git@^2.3.1
     adafruit/Adafruit NeoPixel@^1.12.0   ; uniquement si LED RGB utilisée
 ```
 
