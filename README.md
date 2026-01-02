@@ -1,4 +1,4 @@
-# LED_BUILTIN Library v2.2.0
+# LED_BUILTIN Library v2.2.1
 
 Une bibliothèque Arduino **non-bloquante** pour gérer les LED intégrées (LED_BUILTIN) sur les cartes ESP8266 et ESP32 avec support étendu des GPIO, fonctions de clignotement avancées et gestion des LED RGB.
 ## 📋 Cartes supportées (extrait)
