@@ -867,3 +867,4 @@ void LED_BUILTIN_SOS(void) {
 }
 
 #endif // LED_BUILTIN_COMPATIBILITY_MODE
+#endif // LED_BUILTIN_H
