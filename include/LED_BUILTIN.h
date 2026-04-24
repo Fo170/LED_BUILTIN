@@ -1,6 +1,6 @@
 //  --------------------------------------------------------------------------
 //  LED_BUILTIN.h  –  Gestion non-bloquante des LED intégrées ESP8266 / ESP32
-//  Version 2.3.0
+//  Version 2.3.1
 //  --------------------------------------------------------------------------
 //  ☞  APPELER  LED_BUILTIN_UPDATE()  DANS  loop()  !
 //  --------------------------------------------------------------------------
@@ -414,30 +414,6 @@
 #endif // PLATFORM_ESP32
 
 // ============================================
-// DÉTECTION SPÉCIFIQUE DES CARTES ESP8266
-// ============================================
-#if defined(PLATFORM_ESP8266)
-  
-  // NodeMCU v1.0 - LED bleue sur GPIO2 (inversée)
-  #if defined(ARDUINO_ESP8266_NODEMCU)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 2
-  
-  // Wemos D1 mini - LED bleue sur GPIO2 (inversée)
-  #elif defined(ARDUINO_ESP8266_WEMOS_D1MINI)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 2
-  
-  // ESP-01 - LED bleue sur GPIO2
-  #elif defined(ARDUINO_ESP8266_ESP01)
-    #undef LED_BUILTIN
-    #define LED_BUILTIN 2
-  
-  #endif
-  
-#endif
-
-// ============================================
 // DÉFINITION DE LA POLARITÉ
 // ============================================
 #ifndef LED_BUILTIN_POLARITY
@@ -453,9 +429,6 @@
       // Par défaut HIGH active pour ESP32
       #define LED_BUILTIN_POLARITY 1
     #endif
-  #else
-    // Default polarity if no platform is defined
-    #define LED_BUILTIN_POLARITY 1
   #endif
 #endif
 

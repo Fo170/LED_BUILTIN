@@ -119,11 +119,11 @@ Ajoutez la dépendance à votre `platformio.ini` :
 ```ini
 # Pour cartes standard (ESP32, ESP8266, etc.)
 lib_deps = 
-    https://github.com/Fo170/LED_BUILTIN.git@^2.3.1
+    https://github.com/Fo170/LED_BUILTIN.git@^2.2.0
 
 # Pour cartes avec LED RGB (M5Stack ATOM)
 lib_deps = 
-    https://github.com/Fo170/LED_BUILTIN.git@^2.3.1
+    https://github.com/Fo170/LED_BUILTIN.git@^2.2.0
     adafruit/Adafruit NeoPixel@^1.12.0   ; uniquement si LED RGB utilisée
 ```
 
