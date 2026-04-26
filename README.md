@@ -44,67 +44,6 @@ Avant **l’include**, définissez **une seule** des deux macros :
 
 Si aucune macro n’est fournie → erreur de compilation explicite.
 
-# LED_BUILTIN Library v2.1.0
-
-Bibliothèque Arduino **non-bloquante** pour piloter les LED intégrées (LED_BUILTIN) des cartes ESP8266 / ESP32, avec gestion **automatisée de la polarité**, **motifs personnalisés**, **LED RGB** (WS2812) et **support étendu** des dernières cartes LilyGO, Heltec, Adafruit, M5Stack, etc.
-
-> ⚠️ **Nouveauté v2.1.0** : pour **ESP32-C6** et **Heltec WiFi Kit 32 V3** le programmeur **doit choisir** la broche LED (8 ou 18, 35 ou 38) via une macro **avant** l’include – voir section [Configuration obligatoire](#-configuration-obligatoire).
-> 
-## ✨ Nouveautés v2.0.3
-
-- 🔄 **Contrôle en temps réel** - arrêt, pause, vérification d'état
-- 🔙 **Mode compatibilité** optionnel pour l'ancienne API bloquante
-
-## 🚀 Fonctionnalités
-- ⚡ **Fonctionnement non-bloquant** utilisant `millis()` au lieu de `delay()`
-- 🎨 **LED RGB** native (M5Stack ATOM avec WS2812, ESP32-S3 DevKit, etc.) via **Adafruit NeoPixel** (dépendance optionnelle)  
-- 🎯 API simple : `_START()` + `LED_BUILTIN_UPDATE()` dans `loop()`  
-- 🔙 Mode **compatibilité bloquante** disponible (`LED_BUILTIN_COMPATIBILITY_MODE`)  
-- 📦 **Aucune dépendance** pour les LED classiques ; NeoPixel uniquement si RGB utilisée  
-- 🔄 **Polarité automatique** (LOW ou HIGH active) – surcharge possible  
-- 🆕 **Détection élargie** : LilyGO T-C6, Heltec V3, Adafruit Feather ESP32-C6, Seeed XIAO-C3/C6, etc.
-- **Détection automatique** des cartes ESP8266 et ESP32
-- **Support complet** de plus de 20 modèles de cartes différentes
-- **Gestion automatique de la polarité** (LOW/HIGH active)
-- **Fonctions de clignotement avancées** avec rapport cyclique personnalisable
-- **Gestion LED RGB optionnelle** pour cartes compatibles (M5Stack ATOM)
-- **Motifs personnalisés** et signal SOS intégré
-- **Non-bloquant** - votre code continue de s'exécuter pendant les animations
-- **Sans dépendance obligatoire** - bibliothèque légère par défaut
-
-## 📋 Cartes supportées
-
-### ESP8266
-| Carte | GPIO | Polarité | Notes |
-|-------|------|----------|-------|
-| NodeMCU v1.0 | GPIO2 (D4) | Inversée | LED bleue intégrée |
-| Wemos D1 mini | GPIO2 | Inversée | LED bleue intégrée |
-| ESP-01 | GPIO2 | Inversée | LED bleue sur module |
-| ESP-12E/F | GPIO2 | Inversée | LED sur module |
-
-### ESP32
-| Carte | GPIO | Type LED | Notes |
-|-------|------|----------|-------|
-| ESP32 DevKit | GPIO2 | Standard | LED bleue |
-| DOIT ESP32 | GPIO2 | Standard | LED intégrée |
-| Heltec WiFi LoRa 32 (V1/V2) | GPIO25 | Standard | LED blanche |
-| TTGO T-Display | GPIO4 | Standard | LED sur carte |
-| TTGO T7 Mini32 | GPIO22 | Standard | LED intégrée |
-| TTGO T-Display-S3 | GPIO38 | Standard | LED intégrée |
-| Adafruit Feather ESP32 | GPIO13 | Standard | LED rouge |
-| Adafruit HUZZAH32 | GPIO13 | Standard | LED rouge |
-| SparkFun ESP32 Thing | GPIO5 | Standard | LED bleue |
-| SparkFun Thing Plus | GPIO13 | Standard | LED bleue |
-| Wemos LOLIN32 | GPIO5 | Standard | LED bleue |
-| Wemos D1 R32 | GPIO2 | Inversée | Compatible UNO |
-| M5Stack Core2/Fire/Basic | GPIO2 | Inversée | LED rouge |
-| M5Stick-C | GPIO10 | Standard | LED orange |
-| **M5Stack ATOM** | **GPIO27** | **RGB WS2812** | **LED RGB matricielle** |
-| ESP32-CAM (AI-Thinker) | GPIO4 | Standard | LED flash blanche |
-| ESP32-C3 DevKit | GPIO8 | Standard | LED intégrée |
-| ESP32-S2 DevKit | GPIO18 | Standard | LED intégrée |
-| ESP32-S3 DevKit | GPIO48 | Standard | LED RGB sur certains modèles |
-
 ## 📦 Installation
 
 ### Via Arduino IDE

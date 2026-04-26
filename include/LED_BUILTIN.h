@@ -422,8 +422,7 @@
     #define LED_BUILTIN_POLARITY 0
   #elif defined(PLATFORM_ESP32)
     // Cartes avec LED inversée (LOW active)
-    #if defined(ARDUINO_M5STACK_CORE2) || defined(ARDUINO_M5STACK_FIRE) || \
-        defined(ARDUINO_M5STACK_BASIC) || defined(WEMOS_D1_R32)
+    #if defined(ARDUINO_M5STACK_FIRE) || defined(ARDUINO_M5STACK_BASIC) || defined(WEMOS_D1_R32)
       #define LED_BUILTIN_POLARITY 0
     #else
       // Par défaut HIGH active pour ESP32
