@@ -1,5 +1,5 @@
 /*
-  LED_BUILTIN.h - Exemples d'utilisation (Version 2.3.1 Non-Bloquante)
+  LED_BUILTIN.h - Exemples d'utilisation (Version 2.3.2 Non-Bloquante)
   
   ============================================================================
   IMPORTANT : Cette version utilise millis() au lieu de delay()
@@ -344,7 +344,7 @@ void setup() {
   delay(100);
   
   Serial.println("\n\n========================================");
-  Serial.println("  LED_BUILTIN v2.3.1 - Exemples");
+  Serial.println("  LED_BUILTIN v2.3.2 - Exemples");
   Serial.println("  Mode Non-Bloquant");
   Serial.println("========================================\n");
   
