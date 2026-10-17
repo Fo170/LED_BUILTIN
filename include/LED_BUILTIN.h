@@ -32,7 +32,7 @@
 #define LED_BUILTIN_H
 
 // Version de la librairie (source UNIQUE — agrégée par liste_lib.h)
-#define __LED_BUILTIN_H_VERSION__ "2.3.2"
+#define __LED_BUILTIN_H_VERSION__ "2.3.3"
 #include <Arduino.h>
 
 // ----------------------------------------------------------
